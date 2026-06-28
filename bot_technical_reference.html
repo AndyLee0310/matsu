@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>牛角燈塔守護隊 Bot 技術操作參考手冊</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1e293b;
+      --navy-dark: #0f172a;
+      --navy-mid: #334155;
+      --navy-light: #e8edf5;
+      --green: #06c755;
+      --green-dark: #05a847;
+      --green-light: #e8faf0;
+      --blue: #3b82f6;
+      --blue-light: #eff6ff;
+      --amber: #f59e0b;
+      --amber-light: #fffbeb;
+      --red: #ef4444;
+      --red-light: #fef2f2;
+      --orange: #ea580c;
+      --orange-light: #fff7ed;
+      --purple: #8b5cf6;
+      --purple-light: #f5f3ff;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+      --radius: 10px;
+      --shadow: 0 1px 4px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      color: var(--gray-800);
+      background: var(--gray-50);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    /* ===== 導覽列 ===== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--navy-dark);
+      padding: 0 20px;
+      overflow-x: auto;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    nav ul { list-style: none; display: inline-flex; gap: 0; }
+
+    nav ul li a {
+      display: block;
+      padding: 13px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #94a3b8;
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    nav ul li a:hover { color: #fff; border-bottom-color: var(--green); }
+
+    /* ===== 容器 ===== */
+    .container { max-width: 900px; margin: 0 auto; padding: 28px 20px 80px; }
+
+    /* ===== 封面 ===== */
+    .cover {
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-mid) 100%);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 40px 40px 36px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::after {
+      content: '</>';
+      position: absolute;
+      right: 32px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 72px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.06);
+      pointer-events: none;
+    }
+
+    .cover .badge {
+      display: inline-block;
+      background: var(--green);
+      color: #fff;
+      border-radius: 999px;
+      padding: 3px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .cover h1 { font-size: 24px; font-weight: 900; line-height: 1.35; margin-bottom: 8px; }
+
+    .cover .meta {
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cover .meta span::before { content: '▸ '; color: var(--green); }
+
+    /* ===== 章節 ===== */
+    section { margin-bottom: 36px; }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--gray-900);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .section-title .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== 卡片 ===== */
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 8px;
+    }
+
+    /* ===== 規則區塊 ===== */
+    .rule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 0;
+    }
+
+    .rule-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+      border-top: 3px solid var(--navy);
+    }
+
+    .rule-card.green { border-top-color: var(--green); }
+    .rule-card.blue  { border-top-color: var(--blue); }
+    .rule-card.amber { border-top-color: var(--amber); }
+    .rule-card.red   { border-top-color: var(--red); }
+    .rule-card.purple{ border-top-color: var(--purple); }
+
+    .rule-card .rule-type {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      color: var(--gray-500);
+    }
+
+    .rule-card h4 { font-size: 13px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+
+    .rule-card ul { padding-left: 16px; }
+    .rule-card li { font-size: 13px; color: var(--gray-600); line-height: 1.65; margin-bottom: 2px; }
+
+    /* ===== code inline ===== */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: var(--navy);
+    }
+
+    code.green { background: var(--green-light); border-color: #bbf7d0; color: var(--green-dark); }
+    code.red   { background: var(--red-light); border-color: #fecaca; color: #b91c1c; }
+    code.amber { background: var(--amber-light); border-color: #fde68a; color: #92400e; }
+    code.orange{ background: var(--orange-light); border-color: #fed7aa; color: var(--orange); }
+    code.stage { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+
+    /* ===== 表格 ===== */
+    .table-wrap { overflow-x: auto; margin-bottom: 14px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      min-width: 400px;
+    }
+
+    th {
+      background: var(--navy);
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-700);
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: var(--gray-50); }
+
+    /* ===== 警示框 ===== */
+    .alert {
+      border-radius: 8px;
+      padding: 11px 15px;
+      font-size: 13px;
+      line-height: 1.65;
+      margin: 12px 0;
+    }
+
+    .alert.warn   { background: var(--red-light);    border-left: 4px solid var(--red);    color: #7f1d1d; }
+    .alert.info   { background: var(--blue-light);   border-left: 4px solid var(--blue);   color: #1e3a5f; }
+    .alert.tip    { background: var(--green-light);  border-left: 4px solid var(--green);  color: #064e29; }
+    .alert.amber  { background: var(--amber-light);  border-left: 4px solid var(--amber);  color: #78350f; }
+    .alert.orange { background: var(--orange-light); border-left: 4px solid var(--orange); color: #7c2d12; }
+    .alert.navy   { background: var(--navy-light);   border-left: 4px solid var(--navy);   color: var(--navy-dark); }
+
+    /* ===== 關卡手風琴 ===== */
+    .gate-accordion { margin-bottom: 10px; }
+
+    .gate-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      user-select: none;
+      transition: background 0.15s;
+      border-left: 4px solid var(--navy);
+    }
+
+    .gate-header:hover { background: var(--gray-50); }
+    .gate-header.open  { border-radius: var(--radius) var(--radius) 0 0; border-bottom: 1px solid var(--gray-200); }
+
+    .gate-header .gate-id {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .gate-header .gate-title { font-size: 14px; font-weight: 700; color: var(--gray-900); flex: 1; }
+    .gate-header .gate-count { font-size: 12px; color: var(--gray-400); }
+    .gate-header .chevron { color: var(--gray-400); font-size: 12px; transition: transform 0.2s; }
+    .gate-header.open .chevron { transform: rotate(90deg); }
+
+    .gate-body {
+      display: none;
+      background: #fff;
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .gate-body.open { display: block; }
+
+    /* ===== 任務行 ===== */
+    .task-row {
+      border-bottom: 1px solid var(--gray-100);
+      padding: 14px 18px 14px 22px;
+    }
+
+    .task-row:last-child { border-bottom: none; }
+
+    .task-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .task-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-400);
+      min-width: 28px;
+    }
+
+    .type-badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .type-badge.photo  { background: #dbeafe; color: #1d4ed8; }
+    .type-badge.choice { background: #fef9c3; color: #854d0e; }
+    .type-badge.text   { background: #f0fdf4; color: #15803d; }
+    .type-badge.open   { background: var(--purple-light); color: #6d28d9; }
+    .type-badge.year   { background: #fce7f3; color: #9d174d; }
+
+    .task-q {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-left: 38px;
+      margin-bottom: 8px;
+    }
+
+    .task-detail { margin-left: 38px; }
+
+    .task-detail ul { padding-left: 0; list-style: none; }
+
+    .task-detail li {
+      font-size: 12.5px;
+      color: var(--gray-600);
+      line-height: 1.65;
+      margin-bottom: 3px;
+      padding-left: 4px;
+    }
+
+    .kw-list { display: flex; flex-wrap: wrap; gap: 5px; margin: 4px 0; }
+
+    .kw { background: var(--green-light); color: var(--green-dark); border: 1px solid #bbf7d0; border-radius: 5px; padding: 1px 8px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; }
+
+    .ai-block {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin: 6px 0;
+      font-size: 12.5px;
+      color: var(--gray-600);
+    }
+
+    .ai-block .ai-row { display: flex; gap: 8px; margin-bottom: 3px; }
+    .ai-block .ai-row:last-child { margin-bottom: 0; }
+    .ai-block .ai-label { font-weight: 700; white-space: nowrap; color: var(--gray-500); font-size: 11px; padding-top: 1px; }
+
+    .hint-row { display: flex; gap: 6px; margin: 4px 0; font-size: 12.5px; color: var(--gray-600); }
+    .hint-row .hi { font-weight: 700; color: var(--amber); white-space: nowrap; }
+
+    .force-row { display: flex; gap: 6px; margin: 4px 0; font-size: 12.5px; color: var(--gray-600); }
+    .force-row .fi { font-weight: 700; color: var(--red); white-space: nowrap; }
+
+    /* ===== 沙灘流程步驟 ===== */
+    .beach-flow { display: flex; flex-direction: column; gap: 0; }
+
+    .beach-step {
+      display: flex;
+      gap: 0;
+      position: relative;
+    }
+
+    .beach-step::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 40px;
+      bottom: -1px;
+      width: 2px;
+      background: var(--gray-200);
+    }
+
+    .beach-step:last-child::before { display: none; }
+
+    .beach-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-right: 16px;
+      margin-top: 0;
+      z-index: 1;
+      box-shadow: 0 0 0 4px #fff;
+    }
+
+    .beach-content {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      box-shadow: var(--shadow);
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .beach-content h4 { font-size: 13px; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+    .beach-content p, .beach-content li { font-size: 13px; color: var(--gray-600); line-height: 1.65; }
+    .beach-content ul { padding-left: 16px; margin-top: 4px; }
+
+    .passphrase {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      background: var(--amber-light);
+      border: 2px dashed var(--amber);
+      border-radius: 8px;
+      padding: 10px 18px;
+      display: inline-block;
+      margin: 8px 0;
+      letter-spacing: 2px;
+    }
+
+    /* ===== 條件指令卡 ===== */
+    .cond-card {
+      background: #fff;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--orange);
+      padding: 18px 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .cond-card h4 { font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 14px; }
+
+    .cond-section { margin-bottom: 12px; }
+    .cond-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-400); margin-bottom: 6px; }
+    .cond-section ul { padding-left: 16px; }
+    .cond-section li { font-size: 13px; color: var(--gray-600); line-height: 1.65; margin-bottom: 2px; }
+    .cond-section ol { padding-left: 16px; }
+    .cond-section ol li { font-size: 13px; color: var(--gray-600); line-height: 1.65; margin-bottom: 4px; }
+
+    /* ===== 快速查閱 ===== */
+    .ref-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 640px) { .ref-grid { grid-template-columns: 1fr; } }
+
+    .ref-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .ref-card h4 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-500);
+      margin-bottom: 10px;
+    }
+
+    /* ===== 頁尾 ===== */
+    footer {
+      text-align: center;
+      padding: 24px 20px;
+      font-size: 12px;
+      color: var(--gray-400);
+      border-top: 1px solid var(--gray-200);
+      margin-top: 16px;
+    }
+
+    footer strong { display: block; font-size: 13px; font-weight: 700; color: var(--gray-500); margin-bottom: 4px; }
+
+    /* ===== 列印 ===== */
+    @media print {
+      nav { display: none !important; }
+      body { background: #fff; font-size: 12px; }
+      .container { padding: 12px; max-width: 100%; }
+      .gate-body { display: block !important; }
+      .card, .rule-card, .cond-card, .ref-card, .beach-content { box-shadow: none; border: 1px solid #e2e8f0; }
+      table { box-shadow: none; }
+      section { page-break-inside: avoid; }
+    }
+
+    @media (max-width: 600px) {
+      .cover { padding: 28px 20px; }
+      .cover::after { display: none; }
+      .rule-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="#rules">判定機制</a></li>
+    <li><a href="#commands">全域指令</a></li>
+    <li><a href="#cond">條件指令</a></li>
+    <li><a href="#onboarding">開場流程</a></li>
+    <li><a href="#main">main 選單</a></li>
+    <li><a href="#gates">六關詳細</a></li>
+    <li><a href="#beach">沙灘流程</a></li>
+    <li><a href="#ref">快速查閱</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+
+  <!-- 封面 -->
+  <div class="cover">
+    <div class="badge">TECHNICAL REFERENCE</div>
+    <h1>牛角燈塔守護隊 Bot<br>技術操作參考手冊</h1>
+    <div class="meta">
+      <span>適用對象：技術人員 / 活動工作人員</span>
+      <span>版本：2026 年版（v3）</span>
+    </div>
+  </div>
+
+  <!-- ===== 1. 判定機制 ===== -->
+  <section id="rules">
+    <h2 class="section-title"><span class="tag">01</span>判定機制總覽</h2>
+
+    <div class="rule-grid">
+      <div class="rule-card green">
+        <div class="rule-type">Keyword Match</div>
+        <h4>關鍵詞比對</h4>
+        <ul>
+          <li>完全相等比對 <code>text == kw</code>，非包含</li>
+          <li>未命中 → 送 AI 判讀</li>
+          <li>✅ <code>防風</code></li>
+          <li>🤖 「因為有防風需求」→ AI</li>
+        </ul>
+      </div>
+
+      <div class="rule-card amber">
+        <div class="rule-type">Passphrase Match</div>
+        <h4>密語比對 <code style="font-size:10px;">_norm_passphrase</code></h4>
+        <ul>
+          <li>去首尾空白 + 去句尾標點後完全相等</li>
+          <li>標點：<code>！!。、，,.?？…</code></li>
+          <li>✅ <code>歸航</code> / <code>歸航！</code></li>
+          <li>❌ <code>我們歸航了</code> / <code>已歸航</code></li>
+        </ul>
+      </div>
+
+      <div class="rule-card blue">
+        <div class="rule-type">AI Judge</div>
+        <h4>AI 判讀分支</h4>
+        <ul>
+          <li>AI → PASS：直接過關</li>
+          <li>AI → FAIL（第 1 次）：推 hint，<code class="stage">hint_shown=1</code></li>
+          <li>AI → FAIL（第 2 次）：強制 PASS + 參考答案</li>
+        </ul>
+      </div>
+
+      <div class="rule-card purple">
+        <div class="rule-type">Choice / Open / Year</div>
+        <h4>其他題型</h4>
+        <ul>
+          <li><strong>choice</strong>：取第一字元大寫比對，選錯仍推進，不走 AI</li>
+          <li><strong>open</strong> (<code>is_open=True</code>)：任何文字直接 PASS</li>
+          <li><strong>year</strong>：接受民國 / 西元（±1911 互換），不走 AI</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 2. 全域指令 ===== -->
+  <section id="commands">
+    <h2 class="section-title"><span class="tag">02</span>全域指令</h2>
+    <p style="font-size:13px;color:var(--gray-500);margin-bottom:12px;">任何 stage、任何時間點皆有效（is_helping 攔截期間除外）。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>輸入</th><th>效果</th><th>狀態變化</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>求助</code></td>
+            <td>進入求助模式，之後所有輸入靜默</td>
+            <td><code class="stage">is_helping=1</code></td>
+          </tr>
+          <tr>
+            <td><code>求助完成</code></td>
+            <td>離開求助模式，Bot 回「歡迎回來！」</td>
+            <td><code class="stage">is_helping=0</code></td>
+          </tr>
+          <tr>
+            <td><code>重置</code></td>
+            <td>清空進度、解除綁定、重新顯示 WELCOME</td>
+            <td><span style="font-size:12px;color:var(--red);">⚠️ 正式活動建議鎖定</span></td>
+          </tr>
+          <tr>
+            <td><code>進度</code></td>
+            <td>顯示 0–6 道光完成狀態</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== 3. 條件指令 ===== -->
+  <section id="cond">
+    <h2 class="section-title"><span class="tag">03</span>條件指令</h2>
+
+    <div class="cond-card">
+      <h4>⏰ 來不及 — 牛角村關卡快速結算</h4>
+
+      <div class="cond-section">
+        <div class="cond-section-title">觸發條件（三者同時成立）</div>
+        <ul>
+          <li>輸入 <code class="orange">來不及</code>（含 <code class="orange">來不及！</code> 等，句尾標點去除後比對）</li>
+          <li>路線為牛角起點組（<code>route</code> 以 <code>牛角</code> 開頭）</li>
+          <li>目前 stage 為 <code class="stage">main</code> 或 <code class="stage">gate</code>（正在進行村落六關）</li>
+        </ul>
+      </div>
+
+      <div class="cond-section">
+        <div class="cond-section-title">執行動作</div>
+        <ol>
+          <li>將全部六關（A–F）標為完成：<code>completed_gates = ["A","B","C","D","E","F"]</code></li>
+          <li>清除關卡狀態：<code>current_gate=None</code>、<code>current_task_idx=0</code>、<code>hint_shown=0</code></li>
+          <li>切換 stage：<code class="stage">beach_find_guide</code></li>
+          <li>依序推送：<br>
+            <span style="font-size:12.5px;color:var(--gray-600);display:block;margin-top:4px;padding-left:8px;">①「⏰ 時間來不及了！牛角村其餘的關卡自動通過 ✅ 六道光已全部點亮 🔦」</span>
+            <span style="font-size:12.5px;color:var(--gray-600);display:block;padding-left:8px;">② <code>BEACH_FIND_GUIDE_MSG</code>（引導前往沙灘找嚮導）</span>
+          </li>
+        </ol>
+      </div>
+
+      <div class="cond-section" style="margin-bottom:0;">
+        <div class="cond-section-title">不適用情況（靜默，不觸發）</div>
+        <ul>
+          <li>海灘起點組（route 以 <code>海灘</code> 開頭）</li>
+          <li>已進入沙灘任務（<code class="stage">beach_*</code> stage）</li>
+          <li>已完賽（<code class="stage">done</code> stage）</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. 開場流程 ===== -->
+  <section id="onboarding">
+    <h2 class="section-title"><span class="tag">04</span>開場流程</h2>
+
+    <div class="alert navy" style="margin-bottom:14px;">
+      stage 順序：<code class="stage">need_squad_id</code> → <code class="stage">need_squad_name</code> → <code class="stage">need_team_photo</code>
+    </div>
+
+    <div class="card">
+      <h4>① 小隊編號 <code class="stage">need_squad_id</code></h4>
+      <ul style="padding-left:16px;margin-top:6px;">
+        <li style="font-size:13px;color:var(--gray-600);line-height:1.65;">✅ PASS（roster.json 中存在）
+          <ul style="margin-top:4px;">
+            <li>牛角起點：<code>2-1</code> <code>2-2</code> <code>3-2</code> <code>3-3</code></li>
+            <li>海灘起點：<code>1-1</code> <code>1-2</code> <code>1-3</code> <code>2-3</code> <code>2-4</code> <code>3-1</code></li>
+          </ul>
+        </li>
+        <li style="font-size:13px;color:var(--gray-600);line-height:1.65;margin-top:4px;">❌ FAIL：不在 roster → Bot 回「找不到小隊編號「X」，請確認後重新輸入。」</li>
+        <li style="font-size:13px;color:var(--gray-600);line-height:1.65;">特殊：編號已被綁定 → 「編號 X 已被其他隊伍使用」；自己已綁定其他編號 → 「你已綁定第 X 小隊」</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h4>② 小隊名稱 <code class="stage">need_squad_name</code></h4>
+      <p style="font-size:13px;color:var(--gray-600);margin-top:6px;">✅ 任何文字皆 PASS</p>
+    </div>
+
+    <div class="card">
+      <h4>③ 全隊合照 <code class="stage">need_team_photo</code></h4>
+      <ul style="padding-left:16px;margin-top:6px;">
+        <li style="font-size:13px;color:var(--gray-600);line-height:1.65;">✅ 上傳任意圖片 → 依路線分流：
+          <ul style="margin-top:4px;">
+            <li>牛角起點 → <code class="stage">stage=main</code></li>
+            <li>海灘起點 → <code class="stage">stage=beach_sup_silent</code></li>
+          </ul>
+        </li>
+        <li style="font-size:13px;color:var(--gray-600);margin-top:4px;">❌ 輸入文字 → 「請直接上傳全隊合照📸（傳圖片，不是打字）」</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== 5. main 選單 ===== -->
+  <section id="main">
+    <h2 class="section-title"><span class="tag">05</span>main 選單 <code class="stage" style="font-size:12px;">stage: main</code></h2>
+
+    <div class="table-wrap" style="margin-bottom:12px;">
+      <table>
+        <thead>
+          <tr><th>輸入詞</th><th>對應關卡</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>石厝</code> / <code>會呼吸的石厝</code></td><td>關 A</td></tr>
+          <tr><td><code>廟宇</code> / <code>火焰般的山牆</code> / <code>廟宇山牆</code></td><td>關 B</td></tr>
+          <tr><td><code>做出幼</code> / <code>轉大人</code> / <code>成年</code></td><td>關 C</td></tr>
+          <tr><td><code>剪花</code> / <code>窗上的祝福</code></td><td>關 D</td></tr>
+          <tr><td><code>菜園</code> / <code>巷弄裡的菜園</code></td><td>關 E</td></tr>
+          <tr><td><code>廢墟</code> / <code>被遺忘的家</code></td><td>關 F</td></tr>
+          <tr><td><code>進度</code></td><td>顯示進度</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert info">❌ 其他任何輸入 → 隨機 DOUBT_PHRASES：「你要確定餒？🤔」/「你確定嗎？」/「真的是這樣嗎？🧐」/「再想想看？」/「嗯⋯⋯真的嗎？」</div>
+  </section>
+
+  <!-- ===== 6. 六關詳細 ===== -->
+  <section id="gates">
+    <h2 class="section-title"><span class="tag">06</span>六關詳細</h2>
+    <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px;">點擊關卡標題展開 / 收合。</p>
+
+    <!-- 關A -->
+    <div class="gate-accordion">
+      <div class="gate-header open" onclick="toggleGate(this)">
+        <div class="gate-id">A</div>
+        <div class="gate-title">🏠 會呼吸的石厝</div>
+        <div class="gate-count">6 個任務</div>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="gate-body open">
+
+        <div class="task-row">
+          <div class="task-header">
+            <span class="task-num">①</span>
+            <span class="type-badge photo">📸 photo</span>
+          </div>
+          <ul class="task-detail"><li>✅ 上傳任意圖片</li><li>❌ 輸入文字 → 「請直接上傳照片（傳圖片，不是打字）」</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header">
+            <span class="task-num">②</span>
+            <span class="type-badge choice">🔤 choice</span>
+          </div>
+          <div class="task-q">石厝牆上的石頭比較像？A. 積木整齊 B. 巧妙堆疊</div>
+          <ul class="task-detail"><li>✅ <code>B</code>（答對，顯示知識點，過關）</li><li>❌ <code>A</code>（答錯，顯示知識點，仍過關）</li><li>其他 → DOUBT_PHRASES（附選項 QR）</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header">
+            <span class="task-num">③</span>
+            <span class="type-badge text">💬 text → AI</span>
+          </div>
+          <div class="task-q">屋頂瓦片上為什麼要壓石頭？</div>
+          <div class="task-detail">
+            <div class="kw-list"><span class="kw">風</span><span class="kw">海風</span><span class="kw">強風</span><span class="kw">颱風</span><span class="kw">吹走</span><span class="kw">掀</span><span class="kw">壓住</span><span class="kw">固定</span><span class="kw">防風</span></div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label">AI 標準</span><span>有提到馬祖海風 / 強風 / 颱風，壓石頭固定瓦片防止被吹走</span></div>
+              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「因為馬祖的海風很強，石頭可以壓住瓦片不被吹走」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「美觀」「讓房子重一點」「防曬」「不知道」</span></div>
+            </div>
+            <div class="hint-row"><span class="hi">💡 hint</span><span>想想馬祖最不缺的是什麼？提示：它看不見，但會把沒固定好的東西吹跑。</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>屋頂壓石頭是為了抵擋馬祖強勁的海風，防止瓦片被掀飛。</span></div>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header">
+            <span class="task-num">④</span>
+            <span class="type-badge open">💭 open</span>
+          </div>
+          <div class="task-q">如果住在常有強風的地方，房子還可以做哪些防風設計？</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header">
+            <span class="task-num">⑤</span>
+            <span class="type-badge text">💬 text → AI</span>
+            <span style="font-size:11px;color:var(--gray-400);">附圖 A_1.jpg</span>
+          </div>
+          <div class="task-q">牆上的小孔有什麼用途？為什麼會設計的又小又窄？</div>
+          <div class="task-detail">
+            <div class="kw-list"><span class="kw">觀察海盜</span><span class="kw">防禦警戒敵人</span></div>
+            <div class="alert amber" style="margin:6px 0;font-size:12px;">⚠️ 僅此兩個字串，需完全相等</div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label">AI 標準</span><span>提到觀察 / 瞭望 / 防禦 / 警戒 / 海盜 / 敵人等完整概念</span></div>
+              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「瞭望孔可以觀察海盜是否靠近」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「通風」「採光」「放雜物」「裝飾」</span></div>
+            </div>
+            <div class="hint-row"><span class="hi">💡 hint</span><span>很久以前沿海居民最怕海上的不速之客從海上靠近。這個孔可以讓居民提早發現危險，同時又要避免被不速之客發現自己在看他。</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>這個孔叫做瞭望孔，可以觀察海面和周遭動靜，提早發現海盜或敵人，作為防禦警戒之用。</span></div>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header">
+            <span class="task-num">⑥</span>
+            <span class="type-badge text">💬 text → AI</span>
+            <span style="font-size:11px;color:var(--gray-400);">附圖 A_2.jpg</span>
+          </div>
+          <div class="task-q">牆壁上為什麼會趴著形態各異的魚？</div>
+          <div class="task-detail">
+            <div class="kw-list"><span class="kw">排水</span><span class="kw">雨水</span><span class="kw">落水頭</span><span class="kw">吐水魚</span><span class="kw">魚嘴</span><span class="kw">吉祥</span><span class="kw">豐收</span><span class="kw">漁村</span></div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label">AI 標準</span><span>需提到魚形裝置與排水 / 雨水導流功能；僅說裝飾未提排水 → FAIL</span></div>
+              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「那隻魚是用來排水的，雨水從魚嘴流出」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「好看」「代表漁村文化」（只有文化，無排水功能）</span></div>
+            </div>
+            <div class="hint-row"><span class="hi">💡 hint</span><span>下雨的時候，這隻魚其實會『工作』喔！想想看牠和屋頂的雨水有什麼關係？</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>倒掛的魚叫做落水頭或吐水魚，是屋頂排水系統的一部分，可以把雨水導離牆面。魚的造型也象徵豐收、吉祥與馬祖的漁村文化。</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 關B -->
+    <div class="gate-accordion">
+      <div class="gate-header" onclick="toggleGate(this)">
+        <div class="gate-id">B</div>
+        <div class="gate-title">🔥 火焰般的山牆</div>
+        <div class="gate-count">7 個任務</div>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="gate-body">
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">①</span><span class="type-badge photo">📸 photo</span></div>
+          <ul class="task-detail"><li>✅ 上傳任意圖片</li><li>❌ 輸入文字 → 「請直接上傳照片」</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">②</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">你覺得廟宇屋頂兩端高翹的形狀，最像什麼？</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">③</span><span class="type-badge text">💬 text → AI</span></div>
+          <div class="task-q">你覺得這個牆為什麼要蓋得比屋頂還高呢？</div>
+          <div class="task-detail">
+            <div class="kw-list"><span class="kw">防火</span><span class="kw">火災</span><span class="kw">火勢</span><span class="kw">延燒</span><span class="kw">蔓延</span><span class="kw">阻隔</span><span class="kw">隔火</span><span class="kw">封火</span></div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「防止火從一間燒到另一間蔓延」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「好看」「擋風」「讓神明住得更高」</span></div>
+            </div>
+            <div class="hint-row"><span class="hi">💡 hint</span><span>早期聚落的房屋蓋得很密集，如果其中一間失火，最怕發生什麼事呢？</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>封火山牆蓋得比屋頂高，是為了阻隔火勢蔓延，避免火災從一棟燒到另一棟。</span></div>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">④</span><span class="type-badge text">💬 text → AI</span></div>
+          <div class="task-q">這種高出屋頂能幫助阻隔火勢的山牆，形似烈火的屋頂結構叫○○○牆？</div>
+          <div class="task-detail">
+            <div class="kw-list"><span class="kw">封火山牆</span><span class="kw">風火山牆</span><span class="kw">馬鞍形山牆</span></div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「好像是叫封火山牆」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「防火牆」「山形屋頂」「廟牆」「馬頭牆」</span></div>
+            </div>
+            <div class="hint-row"><span class="hi">💡 hint</span><span>它的名字裡有「火」，因為它最早是為了防止火災蔓延而設計的。也有人說它像馬背上的鞍。</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>這種建築特色叫做封火山牆（又稱風火山牆、馬鞍形山牆），是閩東建築最具代表性的特色之一。</span></div>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">⑤</span><span class="type-badge text">💬 text → AI</span></div>
+          <div class="task-q">除了防火之外，封火山牆在馬祖還能幫助居民對抗什麼自然環境？</div>
+          <div class="task-detail">
+            <div class="kw-list"><span class="kw">風</span><span class="kw">強風</span><span class="kw">海風</span><span class="kw">東北季風</span><span class="kw">颱風</span><span class="kw">防風</span></div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「還可以擋冬天的東北季風」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「大浪」「潮濕」「鹽分腐蝕」（未提風）</span></div>
+            </div>
+            <div class="hint-row"><span class="hi">💡 hint</span><span>馬祖位於海上，冬天最有名的自然特色之一就是風非常大。</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>封火山牆除了防火，也能抵擋強勁海風與東北季風，保護屋頂和建築結構。</span></div>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">⑥</span><span class="type-badge choice">🔤 choice</span></div>
+          <div class="task-q">古人為什麼把山牆設計成不同造型？A. 五行 B. 十二生肖 C. 節氣變化</div>
+          <ul class="task-detail"><li>✅ <code>A</code>（答對，顯示知識點，過關）</li><li>❌ <code>B</code> / <code>C</code>（答錯，顯示知識點，仍過關）</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">⑦</span><span class="type-badge year">📅 year</span></div>
+          <div class="task-q">輸入廟旁石碑上的重建年份</div>
+          <div class="task-detail">
+            <ul><li>✅ PASS：<code>83</code>（民國）/ <code>1994</code>（西元），兩者換算互通</li><li>❌ FAIL：其他任何數字</li></ul>
+            <div class="hint-row" style="margin-top:6px;"><span class="hi">💡 hint</span><span>找找廟旁刻字的石碑，上面通常會寫「中華民國○○年」或西元年份。</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>碑文上記載的年份是民國 83 年（西元 1994 年）。牛峰境五靈公廟是牛角聚落的信仰核心，歷經整修重建，守護著世代在此討海的居民。</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 關C -->
+    <div class="gate-accordion">
+      <div class="gate-header" onclick="toggleGate(this)">
+        <div class="gate-id">C</div>
+        <div class="gate-title">🎊 轉大人的儀式</div>
+        <div class="gate-count">5 個任務（任務①在 intro 處理）</div>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="gate-body">
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">②</span><span class="type-badge text">💬 text → AI</span></div>
+          <div class="task-q">「做出幼（做十六歲）」這個習俗代表什麼？</div>
+          <div class="task-detail">
+            <div class="kw-list"><span class="kw">成年</span><span class="kw">長大</span><span class="kw">大人</span><span class="kw">轉大人</span><span class="kw">成人</span><span class="kw">十六歲</span><span class="kw">脫離孩童</span><span class="kw">成年禮</span><span class="kw">祝福</span></div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「是孩子長大成為大人的儀式」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「是一種食物」「拜拜的東西」「生日慶典」</span></div>
+            </div>
+            <div class="hint-row"><span class="hi">💡 hint</span><span>這是孩子滿十六歲時辦的儀式，慶祝他從「囡仔」變成了什麼？</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>做出幼（做十六歲）是閩東的成年禮俗，象徵孩子正式脫離童年、成為大人，由家族為他舉辦儀式祝福。</span></div>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">③</span><span class="type-badge choice">🔤 choice</span></div>
+          <div class="task-q">做出幼認為幾歲是成年階段？A. 12歲 B. 16歲 C. 18歲</div>
+          <ul class="task-detail"><li>✅ <code>B</code></li><li>❌ <code>A</code> / <code>C</code>（仍過關）</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">④</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">成為大人最重要的是什麼？A. 年齡到了 B. 願意承擔責任。請輸入 A 或 B 並說明。</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">⑤</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">你心中「長大成人」的那一刻是什麼？</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 關D -->
+    <div class="gate-accordion">
+      <div class="gate-header" onclick="toggleGate(this)">
+        <div class="gate-id">D</div>
+        <div class="gate-title">✂️ 窗上的祝福</div>
+        <div class="gate-count">4 個任務</div>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="gate-body">
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">①</span><span class="type-badge photo">📸 photo</span></div>
+          <ul class="task-detail"><li>✅ 上傳任意圖片</li><li>❌ 輸入文字 → 「請直接上傳照片」</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">②</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">你在剪花上看到了什麼圖案或元素？</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">③</span><span class="type-badge text">💬 text → AI</span></div>
+          <div class="task-q">剪花常出現在什麼場合？象徵什麼？</div>
+          <div class="task-detail">
+            <div class="kw-list"><span class="kw">結婚</span><span class="kw">婚禮</span><span class="kw">喜慶</span><span class="kw">節慶</span><span class="kw">過年</span><span class="kw">節日</span><span class="kw">吉祥</span><span class="kw">祝福</span><span class="kw">平安</span><span class="kw">福</span><span class="kw">喜</span><span class="kw">好運</span></div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「婚禮和節慶時貼的，代表吉祥」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「葬禮」「裝飾品」「沒有特別意義」</span></div>
+            </div>
+            <div class="hint-row"><span class="hi">💡 hint</span><span>紅紅的剪紙貼在門窗上，通常是有「好事」要發生的時候——你想到什麼好事？</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>剪花（閩東剪紙窗花）常出現在婚慶與節慶，貼於門窗，象徵吉祥、平安與祝福。</span></div>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">④</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">如果要替小隊設計一張剪花，你會放進什麼圖案？為什麼？</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 關E -->
+    <div class="gate-accordion">
+      <div class="gate-header" onclick="toggleGate(this)">
+        <div class="gate-id">E</div>
+        <div class="gate-title">🥬 巷弄裡的菜園</div>
+        <div class="gate-count">5 個任務</div>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="gate-body">
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">①</span><span class="type-badge photo">📸 photo</span></div>
+          <ul class="task-detail"><li>✅ 上傳任意圖片</li><li>❌ 輸入文字 → 「請直接上傳照片」</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">②</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">請找出菜園裡的一種植物。</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">③</span><span class="type-badge text">💬 text → AI</span></div>
+          <div class="task-q">在四面環海、運補不便的島上，自己種菜對居民有什麼意義？</div>
+          <div class="task-detail">
+            <div class="kw-list"><span class="kw">自給</span><span class="kw">自己種</span><span class="kw">不用買</span><span class="kw">運補</span><span class="kw">運輸</span><span class="kw">船</span><span class="kw">新鮮</span><span class="kw">省</span><span class="kw">糧食</span><span class="kw">方便</span><span class="kw">循環</span></div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「不需要從台灣運來，可以自己供應食物」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「好玩」「打發時間」「美化環境」</span></div>
+            </div>
+            <div class="hint-row"><span class="hi">💡 hint</span><span>島四面是海，菜要從台灣運來很久。自己種，解決了什麼問題？</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>島上運補不便，自己種菜能讓居民自給自足、減少依賴運輸，是島嶼循環生活的體現。</span></div>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">④</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">如果遇到颱風或船班停航，自己種菜會帶來什麼幫助？</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">⑤</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">如果只能種一種蔬菜，你會種什麼？為什麼？</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 關F -->
+    <div class="gate-accordion">
+      <div class="gate-header" onclick="toggleGate(this)">
+        <div class="gate-id">F</div>
+        <div class="gate-title">🏚️ 被遺忘的家</div>
+        <div class="gate-count">5 個任務</div>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="gate-body">
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">①</span><span class="type-badge photo">📸 photo</span></div>
+          <ul class="task-detail"><li>✅ 上傳任意圖片</li><li>❌ 輸入文字 → 「請直接上傳照片」</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">②</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">請用一個詞形容這棟房子給你的感覺。</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">③</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">你覺得這棟房子大概多久沒有人住了？你是從哪裡看出來的？</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">④</span><span class="type-badge text">💬 text → AI</span></div>
+          <div class="task-q">這棟房子為什麼會被遺棄？</div>
+          <div class="task-detail">
+            <div class="kw-list"><span class="kw">外移</span><span class="kw">搬走</span><span class="kw">遷</span><span class="kw">人口</span><span class="kw">去台灣</span><span class="kw">離開</span><span class="kw">沒人住</span><span class="kw">漁業</span><span class="kw">沒落</span><span class="kw">捕魚</span><span class="kw">沒工作</span></div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「因為漁業沒落，大家都搬到台灣了」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「地震」「海嘯」「太舊了」「沒有錢修繕」（未提人口外移或漁業）</span></div>
+            </div>
+            <div class="hint-row"><span class="hi">💡 hint</span><span>以前牛角是馬祖第一大漁村，後來魚變少了，人就……去哪了？</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>牛角曾是馬祖第一大漁村，後來漁業沒落、人口外移至台灣，許多家庭就此離開，留下這些老屋。</span></div>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-header"><span class="task-num">⑤</span><span class="type-badge open">💭 open</span></div>
+          <div class="task-q">如果讓你替它找一個新用途，你會把它變成什麼？</div>
+          <ul class="task-detail"><li>✅ 任何文字皆 PASS</li></ul>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== 7. 沙灘流程 ===== -->
+  <section id="beach">
+    <h2 class="section-title"><span class="tag">07</span>沙灘流程</h2>
+
+    <div class="beach-flow">
+
+      <div class="beach-step">
+        <div class="beach-dot">🏄</div>
+        <div class="beach-content">
+          <h4>密語 1 — <code class="stage">beach_sup_silent</code>（海灘起點組 SUP 期間）</h4>
+          <div style="margin-top:6px;">
+            <div class="passphrase">歸航</div>
+          </div>
+          <ul style="margin-top:8px;">
+            <li>✅ <code>歸航</code> / <code>歸航！</code> / <code>歸航。</code> → 進 <code class="stage">beach_find_guide</code></li>
+            <li>❌ 其他任何輸入 → <strong>完全靜默</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="beach-step">
+        <div class="beach-dot">🧭</div>
+        <div class="beach-content">
+          <h4>密語 2 — <code class="stage">beach_find_guide</code>（找到嚮導）</h4>
+          <div style="margin-top:6px;">
+            <div class="passphrase">我們找到了</div>
+          </div>
+          <ul style="margin-top:8px;">
+            <li>✅ <code>我們找到了</code>（含 <code>我們找到了！</code>）→ 推 guide_found + SDG 第 1 題</li>
+            <li>❌ 其他輸入 → DOUBT_PHRASES</li>
+            <li>特殊：輸入 GATE_TRIGGERS 字詞 → 「六道光都已點亮 ✅ 目前請繼續沙灘的任務喔！」</li>
+          </ul>
+          <div class="alert navy" style="margin-top:10px;">
+            <strong>SDG 三題</strong>（<code class="stage">beach_sdg</code>，全部 <code>is_open=True</code>）<br>
+            題1：舊舊的老東西（老房子、老技藝、老習俗）還值得花力氣留下來嗎？為什麼？<br>
+            題2：「自己有能力生產一些食物」這件事，重不重要？<br>
+            題3：我們可以怎麼做，讓海洋少一點「不屬於它的東西」？<br>
+            ✅ 三題全部任何文字直接 PASS
+          </div>
+        </div>
+      </div>
+
+      <div class="beach-step">
+        <div class="beach-dot">🌊</div>
+        <div class="beach-content">
+          <h4>密語 3 — <code class="stage">beach_cleanup</code>（淨灘完成）</h4>
+          <div style="margin-top:6px;">
+            <div class="passphrase">淨灘完成</div>
+          </div>
+          <ul style="margin-top:8px;">
+            <li>✅ <code>淨灘完成</code>（含 <code>淨灘完成！</code>）→ 進 <code class="stage">beach_form</code></li>
+            <li>❌ 其他輸入 → DOUBT_PHRASES</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="beach-step">
+        <div class="beach-dot">📋</div>
+        <div class="beach-content">
+          <h4>密語 4 — <code class="stage">beach_form</code>（表格填完）</h4>
+          <div style="margin-top:6px;">
+            <div class="passphrase">紀錄完成了</div>
+          </div>
+          <ul style="margin-top:8px;">
+            <li>✅ <code>紀錄完成了</code>（含 <code>紀錄完成了！</code>）
+              <ul style="margin-top:4px;">
+                <li>牛角組 → 進 <code class="stage">beach_sup</code>，推送 BEACH_SUP_MSG</li>
+                <li>海灘組 → <code class="stage">stage=main</code> <code>sup_done=1</code>，解鎖六關</li>
+              </ul>
+            </li>
+            <li>❌ 其他輸入 → DOUBT_PHRASES</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="beach-step">
+        <div class="beach-dot">🏆</div>
+        <div class="beach-content">
+          <h4>密語 5 — <code class="stage">beach_sup</code>（牛角組 SUP）</h4>
+          <div style="margin-top:6px;">
+            <div class="passphrase">歸航</div>
+          </div>
+          <ul style="margin-top:8px;">
+            <li>✅ <code>歸航</code>（含 <code>歸航！</code>）→ 推送 BEACH_COMPLETION 三則訊息 + 結業獎狀圖 → <code class="stage">stage=done</code></li>
+            <li>❌ 其他輸入 → DOUBT_PHRASES</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="beach-step">
+        <div class="beach-dot" style="background:var(--gray-400);">✓</div>
+        <div class="beach-content" style="border-left:3px solid var(--gray-200);">
+          <h4>結業後 — <code class="stage">done</code></h4>
+          <div class="alert warn" style="margin-top:6px;">
+            任何輸入（文字、貼圖、圖片）→ <strong>完全靜默，Bot 不回應</strong>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== 8. 快速查閱 ===== -->
+  <section id="ref">
+    <h2 class="section-title"><span class="tag">08</span>快速查閱表</h2>
+
+    <div class="ref-grid">
+      <div class="ref-card">
+        <h4>所有密語</h4>
+        <table style="min-width:0;">
+          <thead><tr><th>密語</th><th>觸發時機</th></tr></thead>
+          <tbody>
+            <tr><td><code>歸航</code></td><td><code class="stage" style="font-size:10px;">beach_sup_silent</code> / <code class="stage" style="font-size:10px;">beach_sup</code></td></tr>
+            <tr><td><code>我們找到了</code></td><td><code class="stage" style="font-size:10px;">beach_find_guide</code></td></tr>
+            <tr><td><code>淨灘完成</code></td><td><code class="stage" style="font-size:10px;">beach_cleanup</code></td></tr>
+            <tr><td><code>紀錄完成了</code></td><td><code class="stage" style="font-size:10px;">beach_form</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ref-card">
+        <h4>條件指令</h4>
+        <table style="min-width:0;">
+          <thead><tr><th>指令</th><th>適用</th><th>效果</th></tr></thead>
+          <tbody>
+            <tr><td><code class="orange">來不及</code></td><td>牛角組<br><code class="stage" style="font-size:10px;">main/gate</code></td><td style="font-size:12px;">六關自動通過，跳沙灘</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>main 選單觸發詞</h4>
+      <div class="table-wrap" style="margin-top:10px;margin-bottom:0;">
+        <table style="min-width:0;">
+          <thead><tr><th>觸發詞</th><th>關卡</th></tr></thead>
+          <tbody>
+            <tr><td><code>石厝</code> / <code>會呼吸的石厝</code></td><td>關 A</td></tr>
+            <tr><td><code>廟宇</code> / <code>火焰般的山牆</code> / <code>廟宇山牆</code></td><td>關 B</td></tr>
+            <tr><td><code>做出幼</code> / <code>轉大人</code> / <code>成年</code></td><td>關 C</td></tr>
+            <tr><td><code>剪花</code> / <code>窗上的祝福</code></td><td>關 D</td></tr>
+            <tr><td><code>菜園</code> / <code>巷弄裡的菜園</code></td><td>關 E</td></tr>
+            <tr><td><code>廢墟</code> / <code>被遺忘的家</code></td><td>關 F</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>所有關鍵詞（完全相等即直接 PASS，不經 AI）</h4>
+      <div class="table-wrap" style="margin-top:10px;margin-bottom:0;">
+        <table style="min-width:0;">
+          <thead><tr><th>關卡</th><th>任務</th><th>關鍵詞</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>③</td><td><div class="kw-list" style="gap:4px;"><span class="kw">風</span><span class="kw">海風</span><span class="kw">強風</span><span class="kw">颱風</span><span class="kw">吹走</span><span class="kw">掀</span><span class="kw">壓住</span><span class="kw">固定</span><span class="kw">防風</span></div></td></tr>
+            <tr><td>A</td><td>⑤</td><td><div class="kw-list" style="gap:4px;"><span class="kw">觀察海盜</span><span class="kw">防禦警戒敵人</span></div></td></tr>
+            <tr><td>A</td><td>⑥</td><td><div class="kw-list" style="gap:4px;"><span class="kw">排水</span><span class="kw">雨水</span><span class="kw">落水頭</span><span class="kw">吐水魚</span><span class="kw">魚嘴</span><span class="kw">吉祥</span><span class="kw">豐收</span><span class="kw">漁村</span></div></td></tr>
+            <tr><td>B</td><td>③</td><td><div class="kw-list" style="gap:4px;"><span class="kw">防火</span><span class="kw">火災</span><span class="kw">火勢</span><span class="kw">延燒</span><span class="kw">蔓延</span><span class="kw">阻隔</span><span class="kw">隔火</span><span class="kw">封火</span></div></td></tr>
+            <tr><td>B</td><td>④</td><td><div class="kw-list" style="gap:4px;"><span class="kw">封火山牆</span><span class="kw">風火山牆</span><span class="kw">馬鞍形山牆</span></div></td></tr>
+            <tr><td>B</td><td>⑤</td><td><div class="kw-list" style="gap:4px;"><span class="kw">風</span><span class="kw">強風</span><span class="kw">海風</span><span class="kw">東北季風</span><span class="kw">颱風</span><span class="kw">防風</span></div></td></tr>
+            <tr><td>B</td><td>⑦</td><td><div class="kw-list" style="gap:4px;"><span class="kw">83</span><span class="kw">1994</span></div></td></tr>
+            <tr><td>C</td><td>②</td><td><div class="kw-list" style="gap:4px;"><span class="kw">成年</span><span class="kw">長大</span><span class="kw">大人</span><span class="kw">轉大人</span><span class="kw">成人</span><span class="kw">十六歲</span><span class="kw">脫離孩童</span><span class="kw">成年禮</span><span class="kw">祝福</span></div></td></tr>
+            <tr><td>D</td><td>③</td><td><div class="kw-list" style="gap:4px;"><span class="kw">結婚</span><span class="kw">婚禮</span><span class="kw">喜慶</span><span class="kw">節慶</span><span class="kw">過年</span><span class="kw">節日</span><span class="kw">吉祥</span><span class="kw">祝福</span><span class="kw">平安</span><span class="kw">福</span><span class="kw">喜</span><span class="kw">好運</span></div></td></tr>
+            <tr><td>E</td><td>③</td><td><div class="kw-list" style="gap:4px;"><span class="kw">自給</span><span class="kw">自己種</span><span class="kw">不用買</span><span class="kw">運補</span><span class="kw">運輸</span><span class="kw">船</span><span class="kw">新鮮</span><span class="kw">省</span><span class="kw">糧食</span><span class="kw">方便</span><span class="kw">循環</span></div></td></tr>
+            <tr><td>F</td><td>④</td><td><div class="kw-list" style="gap:4px;"><span class="kw">外移</span><span class="kw">搬走</span><span class="kw">遷</span><span class="kw">人口</span><span class="kw">去台灣</span><span class="kw">離開</span><span class="kw">沒人住</span><span class="kw">漁業</span><span class="kw">沒落</span><span class="kw">捕魚</span><span class="kw">沒工作</span></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<footer>
+  <strong>牛角燈塔守護隊 · 音比沙 INBISA · 馬祖南竿牛角聚落</strong>
+  2026 年版（v3）· 技術操作參考手冊 — 僅供工作人員使用
+</footer>
+
+<script>
+  function toggleGate(header) {
+    header.classList.toggle('open');
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

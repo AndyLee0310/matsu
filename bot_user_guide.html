@@ -395,6 +395,38 @@
       margin-top: 6px;
     }
 
+    /* ===== 緊急指令大字（來不及） ===== */
+    .emergency-box {
+      background: #fff7ed;
+      border: 2px dashed #ea580c;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 12px 0;
+      text-align: center;
+    }
+
+    .emergency-box .label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #ea580c;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .emergency-box .phrase {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--gray-900);
+      letter-spacing: 2px;
+    }
+
+    .emergency-box .note {
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-top: 6px;
+    }
+
     /* ===== 警告 / 提示方框 ===== */
     .alert {
       border-radius: 8px;
@@ -420,6 +452,12 @@
       background: var(--green-light);
       border-left: 4px solid var(--green);
       color: #064e29;
+    }
+
+    .alert.orange {
+      background: #fff7ed;
+      border-left: 4px solid #ea580c;
+      color: #7c2d12;
     }
 
     /* ===== 表格 ===== */
@@ -458,6 +496,11 @@
       padding: 2px 10px;
       font-family: monospace;
       display: inline-block;
+    }
+
+    .cmd-word.orange {
+      background: #fff7ed;
+      color: #ea580c;
     }
 
     /* ===== FAQ ===== */
@@ -555,6 +598,7 @@
       .card, .step-card, .gate-card, .type-section, .faq-item, .beach-step { box-shadow: none; border: 1px solid #e5e7eb; }
       table { box-shadow: none; }
       .passphrase-box { border: 2px dashed #f59e0b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .emergency-box { border: 2px dashed #ea580c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       a { color: inherit; text-decoration: none; }
       section { page-break-inside: avoid; }
     }
@@ -808,6 +852,12 @@
     <div class="alert tip">
       💬 <strong>Bot 說「再想想看？」是正常的！</strong><br>
       如果你在選單畫面輸入了奇怪的字，Bot 會說「再想想看？」或「你確定嗎？」這不是出錯了，它只是在等你輸入正確的觸發詞。
+    </div>
+
+    <div class="alert orange">
+      ⏰ <strong>牛角起點組專用：時間來不及怎麼辦？</strong><br>
+      如果在走牛角六關時真的時間不夠，可以輸入 <strong>來不及</strong>，Bot 會自動結算所有未完成的關卡，直接跳到下一個流程（前往沙灘找嚮導）。<br>
+      <span style="font-size:13px;margin-top:4px;display:block;">※ 此指令僅限牛角起點組在六關進行中使用。</span>
     </div>
   </section>
 
@@ -1132,6 +1182,30 @@ B. 巧妙堆疊</div>
       </tbody>
     </table>
 
+    <div style="margin-top:24px;">
+      <p style="font-size:15px;font-weight:700;color:var(--gray-900);margin-bottom:12px;">⏰ 牛角起點組專用指令</p>
+      <table>
+        <thead>
+          <tr>
+            <th>輸入</th>
+            <th>效果</th>
+            <th>適用時機</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="cmd-word orange">來不及</span></td>
+            <td>自動結算牛角村所有未完成關卡，直接跳至沙灘流程。</td>
+            <td>走牛角六關的期間</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="alert orange" style="margin-top:12px;">
+        ⏰ <strong>「來不及」只有牛角起點組在六關進行中才有效。</strong><br>
+        輸入後，Bot 會自動點亮所有未完成的光，並帶你前往沙灘找嚮導。
+      </div>
+    </div>
+
     <div class="alert warn" style="margin-top:16px;">
       ⚠️ <strong>不要隨便輸入「重置」！</strong><br>
       輸入「重置」會清空所有進度和小隊資料，需要重新從頭設定。請只在真正需要時使用，並先詢問輔導員。
@@ -1148,7 +1222,8 @@ B. 巧妙堆疊</div>
         Bot 完全沒有回應，傳什麼都沒反應？
       </div>
       <div class="a">
-        可能是進入了「求助模式」。試試傳送 <strong>求助完成</strong> 給 Bot，看看它有沒有恢復回應。如果還是沒有，請叫輔導員過來確認。
+        可能是進入了「求助模式」。試試傳送 <strong>求助完成</strong> 給 Bot，看看它有沒有恢復回應。如果還是沒有，請叫輔導員過來確認。<br><br>
+        ※ 活動全部結束後（已領取結業獎狀），Bot 就不再回應任何訊息，這是正常的。
       </div>
     </div>
 
@@ -1181,6 +1256,17 @@ B. 巧妙堆疊</div>
     <div class="faq-item">
       <div class="q">
         <span class="q-tag">Q</span>
+        牛角六關時間不夠，怎麼辦？
+      </div>
+      <div class="a">
+        如果是 <strong>牛角起點組</strong>，可以輸入 <strong>來不及</strong>，Bot 會自動把所有尚未完成的關卡全部通過，並直接引導你前往沙灘找嚮導，不會讓隊伍卡在這裡。<br><br>
+        ※ 此指令在牛角六關進行中才有效；海灘起點組或其他階段輸入無效。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="q">
+        <span class="q-tag">Q</span>
         手機沒電了，或是要換另一支手機繼續？
       </div>
       <div class="a">
@@ -1194,7 +1280,7 @@ B. 巧妙堆疊</div>
 <!-- 頁尾 -->
 <footer>
   <strong>牛角燈塔守護隊 · 音比沙 INBISA · 馬祖南竿牛角聚落</strong>
-  2026 年版 · 本說明適用所有參與者（學員、輔導員、家長、老師）
+  2026 年版（v3）· 本說明適用所有參與者（學員、輔導員、家長、老師）
 </footer>
 
 </body>
