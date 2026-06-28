@@ -827,17 +827,16 @@
             <span class="type-badge text">💬 text → AI</span>
             <span style="font-size:11px;color:var(--gray-400);">附圖 A_1.jpg</span>
           </div>
-          <div class="task-q">牆上的小孔有什麼用途？為什麼會設計的又小又窄？</div>
+          <div class="task-q">牆上的這種小孔有什麼用途？</div>
           <div class="task-detail">
-            <div class="kw-list"><span class="kw">觀察海盜</span><span class="kw">防禦警戒敵人</span></div>
-            <div class="alert amber" style="margin:6px 0;font-size:12px;">⚠️ 僅此兩個字串，需完全相等</div>
+            <div class="kw-list"><span class="kw">觀察</span><span class="kw">防禦</span><span class="kw">警戒</span><span class="kw">銃眼</span></div>
             <div class="ai-block">
-              <div class="ai-row"><span class="ai-label">AI 標準</span><span>提到觀察 / 瞭望 / 防禦 / 警戒 / 海盜 / 敵人等完整概念</span></div>
+              <div class="ai-row"><span class="ai-label">AI 標準</span><span>提到觀察外面 / 瞭望 / 防禦 / 警戒 / 海盜 / 敵人等完整概念即 PASS</span></div>
               <div class="ai-row"><span class="ai-label">必 PASS</span><span>「瞭望孔可以觀察海盜是否靠近」</span></div>
               <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「通風」「採光」「放雜物」「裝飾」</span></div>
             </div>
             <div class="hint-row"><span class="hi">💡 hint</span><span>很久以前沿海居民最怕海上的不速之客從海上靠近。這個孔可以讓居民提早發現危險，同時又要避免被不速之客發現自己在看他。</span></div>
-            <div class="force-row"><span class="fi">⚡ 強制</span><span>這個孔叫做瞭望孔，可以觀察海面和周遭動靜，提早發現海盜或敵人，作為防禦警戒之用。</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>這個孔叫做銃眼，是一個內大外小的孔，可以架設火銃、槍械向外攻擊，防禦外敵入侵。</span></div>
           </div>
         </div>
 
@@ -888,10 +887,14 @@
           <div class="task-header"><span class="task-num">③</span><span class="type-badge text">💬 text → AI</span></div>
           <div class="task-q">你覺得這個牆為什麼要蓋得比屋頂還高呢？</div>
           <div class="task-detail">
+            <div style="font-size:11px;font-weight:700;color:var(--gray-500);margin-bottom:4px;">防火關鍵詞（任一命中即 PASS）</div>
             <div class="kw-list"><span class="kw">防火</span><span class="kw">火災</span><span class="kw">火勢</span><span class="kw">延燒</span><span class="kw">蔓延</span><span class="kw">阻隔</span><span class="kw">隔火</span><span class="kw">封火</span></div>
+            <div style="font-size:11px;font-weight:700;color:var(--gray-500);margin:6px 0 4px;">防風關鍵詞（任一命中也 PASS）</div>
+            <div class="kw-list"><span class="kw">風</span><span class="kw">強風</span><span class="kw">海風</span><span class="kw">東北季風</span><span class="kw">颱風</span><span class="kw">防風</span></div>
+            <div class="alert amber" style="margin:8px 0;font-size:12px;">⚠️ 若以防風關鍵詞通過此題，任務⑤題目將自動翻轉（改問防火）</div>
             <div class="ai-block">
               <div class="ai-row"><span class="ai-label">必 PASS</span><span>「防止火從一間燒到另一間蔓延」</span></div>
-              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「好看」「擋風」「讓神明住得更高」</span></div>
+              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「好看」「讓神明住得更高」</span></div>
             </div>
             <div class="hint-row"><span class="hi">💡 hint</span><span>早期聚落的房屋蓋得很密集，如果其中一間失火，最怕發生什麼事呢？</span></div>
             <div class="force-row"><span class="fi">⚡ 強制</span><span>封火山牆蓋得比屋頂高，是為了阻隔火勢蔓延，避免火災從一棟燒到另一棟。</span></div>
@@ -913,16 +916,22 @@
         </div>
 
         <div class="task-row">
-          <div class="task-header"><span class="task-num">⑤</span><span class="type-badge text">💬 text → AI</span></div>
-          <div class="task-q">除了防火之外，封火山牆在馬祖還能幫助居民對抗什麼自然環境？</div>
+          <div class="task-header"><span class="task-num">⑤</span><span class="type-badge text">💬 text → AI</span><span style="font-size:11px;color:var(--orange);margin-left:6px;">題目依任務③作答自動切換</span></div>
           <div class="task-detail">
-            <div class="kw-list"><span class="kw">風</span><span class="kw">強風</span><span class="kw">海風</span><span class="kw">東北季風</span><span class="kw">颱風</span><span class="kw">防風</span></div>
-            <div class="ai-block">
-              <div class="ai-row"><span class="ai-label">必 PASS</span><span>「還可以擋冬天的東北季風」</span></div>
-              <div class="ai-row"><span class="ai-label">必 FAIL</span><span>「大浪」「潮濕」「鹽分腐蝕」（未提風）</span></div>
+            <div class="ai-block" style="margin-bottom:10px;">
+              <div class="ai-row"><span class="ai-label" style="color:var(--green-dark);">預設版本</span><span>任務③以防火關鍵詞過關 → 問防風</span></div>
+              <div style="padding-left:8px;margin-top:4px;font-size:12.5px;color:var(--gray-700);">題目：除了防火之外，封火山牆在馬祖還能幫助居民對抗什麼自然環境？</div>
+              <div style="padding-left:8px;margin-top:4px;">
+                <div class="kw-list"><span class="kw">風</span><span class="kw">強風</span><span class="kw">海風</span><span class="kw">東北季風</span><span class="kw">颱風</span><span class="kw">防風</span></div>
+              </div>
             </div>
-            <div class="hint-row"><span class="hi">💡 hint</span><span>馬祖位於海上，冬天最有名的自然特色之一就是風非常大。</span></div>
-            <div class="force-row"><span class="fi">⚡ 強制</span><span>封火山牆除了防火，也能抵擋強勁海風與東北季風，保護屋頂和建築結構。</span></div>
+            <div class="ai-block">
+              <div class="ai-row"><span class="ai-label" style="color:var(--orange);">翻轉版本</span><span>任務③以防風關鍵詞過關 → 改問防火</span></div>
+              <div style="padding-left:8px;margin-top:4px;font-size:12.5px;color:var(--gray-700);">題目：除了防風之外，封火山牆還能發揮什麼功能？</div>
+              <div style="padding-left:8px;margin-top:4px;">
+                <div class="kw-list"><span class="kw">防火</span><span class="kw">火災</span><span class="kw">火勢</span><span class="kw">延燒</span><span class="kw">蔓延</span><span class="kw">阻隔</span><span class="kw">隔火</span><span class="kw">封火</span></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -934,11 +943,11 @@
 
         <div class="task-row">
           <div class="task-header"><span class="task-num">⑦</span><span class="type-badge year">📅 year</span></div>
-          <div class="task-q">輸入廟旁石碑上的重建年份</div>
+          <div class="task-q">找找廟旁的石碑，輸入碑文上的神蹟年份</div>
           <div class="task-detail">
-            <ul><li>✅ PASS：<code>83</code>（民國）/ <code>1994</code>（西元），兩者換算互通</li><li>❌ FAIL：其他任何數字</li></ul>
+            <ul><li>✅ PASS：<code>39</code>（民國）/ <code>1950</code>（西元），兩者換算互通</li><li>❌ FAIL：其他任何數字</li></ul>
             <div class="hint-row" style="margin-top:6px;"><span class="hi">💡 hint</span><span>找找廟旁刻字的石碑，上面通常會寫「中華民國○○年」或西元年份。</span></div>
-            <div class="force-row"><span class="fi">⚡ 強制</span><span>碑文上記載的年份是民國 83 年（西元 1994 年）。牛峰境五靈公廟是牛角聚落的信仰核心，歷經整修重建，守護著世代在此討海的居民。</span></div>
+            <div class="force-row"><span class="fi">⚡ 強制</span><span>碑文上記載的年份是民國 39 年（西元 1950 年）。牛峰境五靈公廟是牛角聚落的信仰核心，歷經整修重建，守護著世代在此討海的居民。</span></div>
           </div>
         </div>
 
@@ -1291,12 +1300,12 @@
           <thead><tr><th>關卡</th><th>任務</th><th>關鍵詞</th></tr></thead>
           <tbody>
             <tr><td>A</td><td>③</td><td><div class="kw-list" style="gap:4px;"><span class="kw">風</span><span class="kw">海風</span><span class="kw">強風</span><span class="kw">颱風</span><span class="kw">吹走</span><span class="kw">掀</span><span class="kw">壓住</span><span class="kw">固定</span><span class="kw">防風</span></div></td></tr>
-            <tr><td>A</td><td>⑤</td><td><div class="kw-list" style="gap:4px;"><span class="kw">觀察海盜</span><span class="kw">防禦警戒敵人</span></div></td></tr>
+            <tr><td>A</td><td>⑤</td><td><div class="kw-list" style="gap:4px;"><span class="kw">觀察</span><span class="kw">防禦</span><span class="kw">警戒</span><span class="kw">銃眼</span></div></td></tr>
             <tr><td>A</td><td>⑥</td><td><div class="kw-list" style="gap:4px;"><span class="kw">排水</span><span class="kw">雨水</span><span class="kw">落水頭</span><span class="kw">吐水魚</span><span class="kw">魚嘴</span><span class="kw">吉祥</span><span class="kw">豐收</span><span class="kw">漁村</span></div></td></tr>
-            <tr><td>B</td><td>③</td><td><div class="kw-list" style="gap:4px;"><span class="kw">防火</span><span class="kw">火災</span><span class="kw">火勢</span><span class="kw">延燒</span><span class="kw">蔓延</span><span class="kw">阻隔</span><span class="kw">隔火</span><span class="kw">封火</span></div></td></tr>
+            <tr><td>B</td><td>③</td><td><div class="kw-list" style="gap:4px;"><span class="kw">防火</span><span class="kw">火災</span><span class="kw">火勢</span><span class="kw">延燒</span><span class="kw">蔓延</span><span class="kw">阻隔</span><span class="kw">隔火</span><span class="kw">封火</span><span class="kw">風</span><span class="kw">強風</span><span class="kw">海風</span><span class="kw">東北季風</span><span class="kw">颱風</span><span class="kw">防風</span></div></td></tr>
             <tr><td>B</td><td>④</td><td><div class="kw-list" style="gap:4px;"><span class="kw">封火山牆</span><span class="kw">風火山牆</span><span class="kw">馬鞍形山牆</span></div></td></tr>
-            <tr><td>B</td><td>⑤</td><td><div class="kw-list" style="gap:4px;"><span class="kw">風</span><span class="kw">強風</span><span class="kw">海風</span><span class="kw">東北季風</span><span class="kw">颱風</span><span class="kw">防風</span></div></td></tr>
-            <tr><td>B</td><td>⑦</td><td><div class="kw-list" style="gap:4px;"><span class="kw">83</span><span class="kw">1994</span></div></td></tr>
+            <tr><td>B</td><td>⑤</td><td style="font-size:12px;color:var(--gray-600);">依任務③作答切換（預設：防風；翻轉：防火）— 詳見上方</td></tr>
+            <tr><td>B</td><td>⑦</td><td><div class="kw-list" style="gap:4px;"><span class="kw">39</span><span class="kw">1950</span></div></td></tr>
             <tr><td>C</td><td>②</td><td><div class="kw-list" style="gap:4px;"><span class="kw">成年</span><span class="kw">長大</span><span class="kw">大人</span><span class="kw">轉大人</span><span class="kw">成人</span><span class="kw">十六歲</span><span class="kw">脫離孩童</span><span class="kw">成年禮</span><span class="kw">祝福</span></div></td></tr>
             <tr><td>D</td><td>③</td><td><div class="kw-list" style="gap:4px;"><span class="kw">結婚</span><span class="kw">婚禮</span><span class="kw">喜慶</span><span class="kw">節慶</span><span class="kw">過年</span><span class="kw">節日</span><span class="kw">吉祥</span><span class="kw">祝福</span><span class="kw">平安</span><span class="kw">福</span><span class="kw">喜</span><span class="kw">好運</span></div></td></tr>
             <tr><td>E</td><td>③</td><td><div class="kw-list" style="gap:4px;"><span class="kw">自給</span><span class="kw">自己種</span><span class="kw">不用買</span><span class="kw">運補</span><span class="kw">運輸</span><span class="kw">船</span><span class="kw">新鮮</span><span class="kw">省</span><span class="kw">糧食</span><span class="kw">方便</span><span class="kw">循環</span></div></td></tr>
