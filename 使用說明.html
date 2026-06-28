@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>牛角燈塔守護隊 LINE Bot 完整使用說明</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== 基礎重設 ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #06c755;
+      --green-dark: #05a847;
+      --green-light: #e8faf0;
+      --blue: #1a73e8;
+      --blue-light: #e8f0fe;
+      --amber: #f59e0b;
+      --amber-light: #fffbeb;
+      --red: #ef4444;
+      --red-light: #fef2f2;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-400: #9ca3af;
+      --gray-600: #4b5563;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      color: var(--gray-800);
+      background: var(--gray-50);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ===== 導覽列 ===== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      border-bottom: 2px solid var(--green);
+      padding: 0 16px;
+      overflow-x: auto;
+      white-space: nowrap;
+      box-shadow: var(--shadow);
+    }
+
+    nav ul {
+      list-style: none;
+      display: inline-flex;
+      gap: 0;
+    }
+
+    nav ul li a {
+      display: block;
+      padding: 14px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-600);
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    nav ul li a:hover {
+      color: var(--green-dark);
+      border-bottom-color: var(--green);
+    }
+
+    /* ===== 內容容器 ===== */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    /* ===== 封面 ===== */
+    .cover {
+      background: linear-gradient(135deg, #0a4d2e 0%, #06c755 100%);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .cover h1 {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .cover .subtitle {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 24px;
+    }
+
+    .cover .tags {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cover .tag {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* ===== 章節標題 ===== */
+    section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--gray-900);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .section-title .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: var(--green);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ===== 卡片 ===== */
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--gray-900);
+    }
+
+    .card p, .card li {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.75;
+    }
+
+    .card ul {
+      padding-left: 20px;
+    }
+
+    /* ===== 步驟卡片 ===== */
+    .step-card {
+      background: #fff;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--green);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--green);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    /* ===== LINE 對話泡泡 ===== */
+    .chat-demo {
+      background: #c3d9a8;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bubble-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .bubble-row.right {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      background: #fff;
+    }
+
+    .bubble {
+      max-width: 72%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .bubble-row.left .bubble {
+      background: #fff;
+      border-bottom-left-radius: 4px;
+      color: var(--gray-800);
+    }
+
+    .bubble-row.right .bubble {
+      background: #06c755;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bubble-label {
+      font-size: 11px;
+      color: #555;
+      margin-bottom: 4px;
+    }
+
+    .bubble-row.left .bubble-label {
+      text-align: left;
+    }
+
+    .bubble-row.right .bubble-label {
+      text-align: right;
+    }
+
+    /* ===== 六關 Grid ===== */
+    .gate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .gate-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      border-top: 4px solid var(--green);
+    }
+
+    .gate-card .gate-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--green-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .gate-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 8px;
+    }
+
+    .trigger-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .trigger-tag {
+      background: var(--green-light);
+      color: var(--green-dark);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* ===== 題型區塊 ===== */
+    .type-section {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .type-badge {
+      display: inline-block;
+      background: var(--blue-light);
+      color: var(--blue);
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .type-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--gray-900);
+    }
+
+    .type-section p {
+      font-size: 14px;
+      color: var(--gray-600);
+      margin-bottom: 10px;
+      line-height: 1.75;
+    }
+
+    /* ===== 密語大字 ===== */
+    .passphrase-box {
+      background: var(--amber-light);
+      border: 2px dashed var(--amber);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 12px 0;
+      text-align: center;
+    }
+
+    .passphrase-box .label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--amber);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .passphrase-box .phrase {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--gray-900);
+      letter-spacing: 2px;
+    }
+
+    .passphrase-box .note {
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-top: 6px;
+    }
+
+    /* ===== 警告 / 提示方框 ===== */
+    .alert {
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      line-height: 1.65;
+      margin: 12px 0;
+    }
+
+    .alert.warn {
+      background: var(--red-light);
+      border-left: 4px solid var(--red);
+      color: #7f1d1d;
+    }
+
+    .alert.info {
+      background: var(--blue-light);
+      border-left: 4px solid var(--blue);
+      color: #1e3a5f;
+    }
+
+    .alert.tip {
+      background: var(--green-light);
+      border-left: 4px solid var(--green);
+      color: #064e29;
+    }
+
+    /* ===== 表格 ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    th {
+      background: var(--green);
+      color: #fff;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-700, #374151);
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: var(--gray-50); }
+
+    .cmd-word {
+      font-size: 15px;
+      font-weight: 700;
+      background: var(--gray-100);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-family: monospace;
+      display: inline-block;
+    }
+
+    /* ===== FAQ ===== */
+    .faq-item {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .faq-item .q {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .faq-item .q .q-tag {
+      flex-shrink: 0;
+      background: var(--red);
+      color: #fff;
+      border-radius: 6px;
+      padding: 1px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .faq-item .a {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.75;
+    }
+
+    /* ===== 沙灘步驟 ===== */
+    .beach-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .beach-step .icon {
+      font-size: 28px;
+      flex-shrink: 0;
+      width: 44px;
+      text-align: center;
+    }
+
+    .beach-step .content h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--gray-900);
+    }
+
+    .beach-step .content p {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.7;
+    }
+
+    /* ===== 頁尾 ===== */
+    footer {
+      text-align: center;
+      padding: 32px 20px;
+      font-size: 13px;
+      color: var(--gray-400);
+      border-top: 1px solid var(--gray-200);
+      margin-top: 20px;
+    }
+
+    footer strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-600);
+      margin-bottom: 6px;
+    }
+
+    /* ===== 列印 ===== */
+    @media print {
+      nav { display: none !important; }
+      body { background: #fff; font-size: 13px; }
+      .container { padding: 16px; max-width: 100%; }
+      .cover { background: #0a4d2e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .card, .step-card, .gate-card, .type-section, .faq-item, .beach-step { box-shadow: none; border: 1px solid #e5e7eb; }
+      table { box-shadow: none; }
+      .passphrase-box { border: 2px dashed #f59e0b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      a { color: inherit; text-decoration: none; }
+      section { page-break-inside: avoid; }
+    }
+
+    /* ===== 響應式 ===== */
+    @media (max-width: 600px) {
+      .cover h1 { font-size: 20px; }
+      .cover { padding: 32px 20px; }
+      .gate-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 導覽列 -->
+<nav>
+  <ul>
+    <li><a href="#intro">什麼是 Bot？</a></li>
+    <li><a href="#register">加入流程</a></li>
+    <li><a href="#gates">六關</a></li>
+    <li><a href="#answer-types">答題方式</a></li>
+    <li><a href="#beach">沙灘流程</a></li>
+    <li><a href="#commands">指令</a></li>
+    <li><a href="#faq">常見問題</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+
+  <!-- ===== 封面 ===== -->
+  <div class="cover">
+    <h1>牛角燈塔守護隊<br>LINE Bot 完整使用說明</h1>
+    <p class="subtitle">給所有人看的版本 — 不需要任何程式背景</p>
+    <div class="tags">
+      <span class="tag">🏠 牛角聚落探索</span>
+      <span class="tag">🌊 沙灘淨灘</span>
+      <span class="tag">🏄 SUP 立槳</span>
+    </div>
+  </div>
+
+  <!-- ===== 1. 這個 Bot 是什麼 ===== -->
+  <section id="intro">
+    <h2 class="section-title"><span class="num">1</span>這個 Bot 是什麼？</h2>
+
+    <div class="card">
+      <h3>🤖 一個陪你走完整個活動的聊天夥伴</h3>
+      <p>這是一個 <strong>LINE 聊天機器人</strong>。你只要在 LINE 裡和它說話，它就會一步一步帶你的小隊走完：</p>
+      <ul style="margin-top:10px;">
+        <li>牛角聚落裡的 <strong>六個文化探索關卡</strong></li>
+        <li>沙灘上的 <strong>淨灘、SDG 反思、SUP 立槳</strong> 任務</li>
+      </ul>
+      <p style="margin-top:12px;">全部完成後，Bot 會發給你們一張 <strong>結業獎狀</strong>！🎉</p>
+    </div>
+
+    <div class="card">
+      <h3>📱 怎麼找到它？</h3>
+      <p>掃描活動現場的 <strong>QR Code</strong> 加 Bot 為 LINE 好友，就可以開始了。</p>
+    </div>
+
+    <div class="alert warn">
+      ⚠️ <strong>重要提醒：一支手機代表一支小隊。</strong><br>
+      Bot 會記住每支小隊的進度。小隊的所有人只要透過同一支手機和 Bot 對話就好，不需要每個人都加好友。
+    </div>
+  </section>
+
+  <!-- ===== 2. 加入流程 ===== -->
+  <section id="register">
+    <h2 class="section-title"><span class="num">2</span>加入流程（一次性設定）</h2>
+    <p style="margin-bottom:20px; color:var(--gray-600); font-size:14px;">第一次使用 Bot 時，需要完成以下四個步驟，之後就直接進入活動了。</p>
+
+    <!-- 步驟一 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <h3>掃 QR Code 加好友</h3>
+      </div>
+      <p style="font-size:14px;color:var(--gray-600);">使用手機 LINE → 掃一掃，掃描活動現場的 QR Code。加好友後，Bot 會自動傳來歡迎訊息並開始引導。</p>
+    </div>
+
+    <!-- 步驟二 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <h3>輸入小隊編號</h3>
+      </div>
+      <p style="font-size:14px;color:var(--gray-600);">Bot 會問你的小隊編號，格式是像 <strong>1-1、2-3</strong> 這樣的數字加號。依照你的小隊牌直接輸入就好。</p>
+
+      <div class="chat-demo">
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">請輸入你的小隊編號（例如：1-1、2-3）</div>
+          </div>
+        </div>
+        <div class="bubble-row right">
+          <div>
+            <div class="bubble-label">你</div>
+            <div class="bubble">2-1</div>
+          </div>
+          <div class="avatar">😊</div>
+        </div>
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">找到了！歡迎第 2-1 小隊 🎉</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert info">打錯了也沒關係，Bot 會提示你重新輸入，不會卡住。</div>
+    </div>
+
+    <!-- 步驟三 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <h3>輸入小隊名稱</h3>
+      </div>
+      <p style="font-size:14px;color:var(--gray-600);">Bot 接著會問你們的小隊名稱。任何名字都可以，輸入什麼都算通過！</p>
+      <div class="chat-demo">
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">你們小隊叫什麼名字呢？</div>
+          </div>
+        </div>
+        <div class="bubble-row right">
+          <div>
+            <div class="bubble-label">你</div>
+            <div class="bubble">牛角閃電俠</div>
+          </div>
+          <div class="avatar">😊</div>
+        </div>
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">好名字！歡迎牛角閃電俠 ✨</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 步驟四 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">4</div>
+        <h3>上傳全隊合照</h3>
+      </div>
+      <p style="font-size:14px;color:var(--gray-600);">Bot 會請你們傳一張全隊合照。請直接在 LINE 裡 <strong>傳圖片</strong>，不是打字描述！</p>
+
+      <div class="alert warn">
+        📸 <strong>傳圖片，不是打字！</strong><br>
+        點選 LINE 輸入框左邊的「+」→ 相簿，選一張照片傳送。如果用打字，Bot 會提醒你再傳一次。
+      </div>
+
+      <div class="chat-demo">
+        <div class="bubble-row right">
+          <div>
+            <div class="bubble-label">你（傳了一張照片）</div>
+            <div class="bubble">🖼️ [圖片]</div>
+          </div>
+          <div class="avatar">😊</div>
+        </div>
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">謝謝你們！設定完成，活動開始囉 🚀</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;background:var(--gray-50);box-shadow:none;border:1px solid var(--gray-200);">
+        <h3>📍 兩種路線說明</h3>
+        <p>上傳合照後，Bot 會依照你的小隊路線引導你：</p>
+        <ul style="margin-top:8px;">
+          <li><strong>牛角起點組</strong>（2-1、2-2、3-2、3-3）：先走牛角六關 → 再去沙灘</li>
+          <li><strong>海灘起點組</strong>（1-1、1-2、1-3、2-3、2-4、3-1）：先去沙灘 → 再走牛角六關</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 3. 六道村落關卡 ===== -->
+  <section id="gates">
+    <h2 class="section-title"><span class="num">3</span>六道村落關卡</h2>
+    <p style="margin-bottom:16px; color:var(--gray-600); font-size:14px;">在牛角聚落裡，有六個等你探索的文化關卡，每個關卡都藏著不同的馬祖故事。</p>
+
+    <div class="gate-grid">
+      <div class="gate-card">
+        <div class="gate-label">關 A</div>
+        <h3>🏠 會呼吸的石厝</h3>
+        <div class="trigger-tags">
+          <span class="trigger-tag">石厝</span>
+          <span class="trigger-tag">會呼吸的石厝</span>
+        </div>
+      </div>
+      <div class="gate-card">
+        <div class="gate-label">關 B</div>
+        <h3>🔥 火焰般的山牆</h3>
+        <div class="trigger-tags">
+          <span class="trigger-tag">廟宇</span>
+          <span class="trigger-tag">火焰般的山牆</span>
+          <span class="trigger-tag">廟宇山牆</span>
+        </div>
+      </div>
+      <div class="gate-card">
+        <div class="gate-label">關 C</div>
+        <h3>🎊 轉大人的儀式</h3>
+        <div class="trigger-tags">
+          <span class="trigger-tag">做出幼</span>
+          <span class="trigger-tag">轉大人</span>
+          <span class="trigger-tag">成年</span>
+        </div>
+      </div>
+      <div class="gate-card">
+        <div class="gate-label">關 D</div>
+        <h3>✂️ 窗上的祝福</h3>
+        <div class="trigger-tags">
+          <span class="trigger-tag">剪花</span>
+          <span class="trigger-tag">窗上的祝福</span>
+        </div>
+      </div>
+      <div class="gate-card">
+        <div class="gate-label">關 E</div>
+        <h3>🥬 巷弄裡的菜園</h3>
+        <div class="trigger-tags">
+          <span class="trigger-tag">菜園</span>
+          <span class="trigger-tag">巷弄裡的菜園</span>
+        </div>
+      </div>
+      <div class="gate-card">
+        <div class="gate-label">關 F</div>
+        <h3>🏚️ 被遺忘的家</h3>
+        <div class="trigger-tags">
+          <span class="trigger-tag">廢墟</span>
+          <span class="trigger-tag">被遺忘的家</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>怎麼進入關卡？</h3>
+      <p>在活動選單上，Bot 會提供快速回覆按鈕讓你點選；或者，你也可以直接打上方表格裡的 <strong>觸發詞</strong> 傳給 Bot。</p>
+    </div>
+
+    <div class="alert tip">
+      💬 <strong>Bot 說「再想想看？」是正常的！</strong><br>
+      如果你在選單畫面輸入了奇怪的字，Bot 會說「再想想看？」或「你確定嗎？」這不是出錯了，它只是在等你輸入正確的觸發詞。
+    </div>
+  </section>
+
+  <!-- ===== 4. 答題方式 ===== -->
+  <section id="answer-types">
+    <h2 class="section-title"><span class="num">4</span>答題方式（五種類型）</h2>
+    <p style="margin-bottom:20px; color:var(--gray-600); font-size:14px;">不同的題目有不同的回答方式，以下一一說明。</p>
+
+    <!-- 類型一 -->
+    <div class="type-section">
+      <div class="type-badge">類型一</div>
+      <h3>📸 拍照題</h3>
+      <p>Bot 請你拍一張照片。直接傳圖片給 Bot 就算通過，不需要任何說明文字，任何一張圖片都行！</p>
+      <div class="chat-demo">
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">請幫石厝拍一張照，傳給我看看！</div>
+          </div>
+        </div>
+        <div class="bubble-row right">
+          <div>
+            <div class="bubble-label">你</div>
+            <div class="bubble">🖼️ [傳了一張照片]</div>
+          </div>
+          <div class="avatar">😊</div>
+        </div>
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">拍得很好！繼續下一題 👍</div>
+          </div>
+        </div>
+      </div>
+      <div class="alert warn">⚠️ 如果打字而不傳圖，Bot 會提醒你「請直接上傳照片（傳圖片，不是打字）」。</div>
+    </div>
+
+    <!-- 類型二 -->
+    <div class="type-section">
+      <div class="type-badge">類型二</div>
+      <h3>🔤 選擇題</h3>
+      <p>Bot 給你 A、B、C 選項，輸入字母就好。<strong>選錯也不會卡關！</strong> Bot 會告訴你正確答案後繼續下一題。</p>
+      <div class="chat-demo">
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">石厝牆上的石頭比較像？
+A. 積木整齊
+B. 巧妙堆疊</div>
+          </div>
+        </div>
+        <div class="bubble-row right">
+          <div>
+            <div class="bubble-label">你</div>
+            <div class="bubble">B</div>
+          </div>
+          <div class="avatar">😊</div>
+        </div>
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">答對了！閩東石厝的石頭是就地取材、巧妙堆疊而成的 ✅</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 類型三 -->
+    <div class="type-section">
+      <div class="type-badge">類型三</div>
+      <h3>💬 知識問答題</h3>
+      <p>這種題目沒有固定答案，Bot 的 AI 會判斷你的意思。<strong>不需要字字相同，</strong> 重點答到了就能過！</p>
+      <p>一共有三種可能的結果：</p>
+
+      <div style="margin-top:12px;">
+        <p style="font-size:13px;font-weight:700;color:var(--green-dark);margin-bottom:6px;">✅ 結果一：直接通過</p>
+        <div class="chat-demo">
+          <div class="bubble-row left">
+            <div class="avatar">🤖</div>
+            <div>
+              <div class="bubble-label">Bot</div>
+              <div class="bubble">屋頂瓦片上為什麼要壓石頭？</div>
+            </div>
+          </div>
+          <div class="bubble-row right">
+            <div>
+              <div class="bubble-label">你</div>
+              <div class="bubble">馬祖的海風很強，用石頭壓住瓦片不讓它被吹走</div>
+            </div>
+            <div class="avatar">😊</div>
+          </div>
+          <div class="bubble-row left">
+            <div class="avatar">🤖</div>
+            <div>
+              <div class="bubble-label">Bot</div>
+              <div class="bubble">說得非常好！答案正確 ✅</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <p style="font-size:13px;font-weight:700;color:var(--amber);margin-bottom:6px;">💡 結果二：收到提示，可以再答一次</p>
+        <div class="chat-demo">
+          <div class="bubble-row right">
+            <div>
+              <div class="bubble-label">你</div>
+              <div class="bubble">讓屋頂好看一點</div>
+            </div>
+            <div class="avatar">😊</div>
+          </div>
+          <div class="bubble-row left">
+            <div class="avatar">🤖</div>
+            <div>
+              <div class="bubble-label">Bot</div>
+              <div class="bubble">💡 提示：想想馬祖最不缺的是什麼？它看不見，但會把沒固定好的東西吹跑。</div>
+            </div>
+          </div>
+          <div class="bubble-row right">
+            <div>
+              <div class="bubble-label">你（再試一次）</div>
+              <div class="bubble">防風，壓住瓦片</div>
+            </div>
+            <div class="avatar">😊</div>
+          </div>
+          <div class="bubble-row left">
+            <div class="avatar">🤖</div>
+            <div>
+              <div class="bubble-label">Bot</div>
+              <div class="bubble">答對了！✅</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <p style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px;">⚡ 結果三：兩次都沒答到重點，Bot 直接告訴你答案然後繼續</p>
+        <div class="chat-demo">
+          <div class="bubble-row left">
+            <div class="avatar">🤖</div>
+            <div>
+              <div class="bubble-label">Bot</div>
+              <div class="bubble">摁...還是錯誤呢～不過沒關係，這次就先算你們通過啦！不過你們還是要記得：屋頂壓石頭是為了抵擋馬祖強勁的海風，防止瓦片被掀飛。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert tip" style="margin-top:14px;">
+        💡 <strong>答題小技巧：</strong>回答要說到「重點」。例如問排水，要提到「排水」或「雨水」，只說「好看」或「裝飾」通常不夠。
+      </div>
+    </div>
+
+    <!-- 類型四 -->
+    <div class="type-section">
+      <div class="type-badge">類型四</div>
+      <h3>💭 反思題</h3>
+      <p>這種題目沒有對錯，說任何話都算通過。Bot 想聽聽你的真心想法！</p>
+      <div class="chat-demo">
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">如果住在常有強風的地方，房子還可以做哪些防風設計？</div>
+          </div>
+        </div>
+        <div class="bubble-row right">
+          <div>
+            <div class="bubble-label">你</div>
+            <div class="bubble">可以把窗戶做小一點，或是種樹當防風林</div>
+          </div>
+          <div class="avatar">😊</div>
+        </div>
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">謝謝你的分享 ✨ 這個答案沒有對錯。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 類型五 -->
+    <div class="type-section">
+      <div class="type-badge">類型五</div>
+      <h3>📅 年份題（僅關B廟宇）</h3>
+      <p>Bot 會請你找廟旁石碑上的年份，輸入數字就好。民國年或西元年都接受，Bot 會自動換算！</p>
+      <div class="chat-demo">
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">請找找廟旁的石碑，輸入上面寫的重建年份。</div>
+          </div>
+        </div>
+        <div class="bubble-row right">
+          <div>
+            <div class="bubble-label">你</div>
+            <div class="bubble">83</div>
+          </div>
+          <div class="avatar">😊</div>
+        </div>
+        <div class="bubble-row left">
+          <div class="avatar">🤖</div>
+          <div>
+            <div class="bubble-label">Bot</div>
+            <div class="bubble">正確！民國 83 年，也就是西元 1994 年 ✅</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. 沙灘流程 ===== -->
+  <section id="beach">
+    <h2 class="section-title"><span class="num">5</span>沙灘流程</h2>
+    <p style="margin-bottom:8px; color:var(--gray-600); font-size:14px;">沙灘的流程用「密語」來推進。到了每個任務的結尾，輸入指定的密語，Bot 就知道你們已完成。</p>
+
+    <div class="alert warn" style="margin-bottom:20px;">
+      ⚠️ <strong>密語一定要完全一樣！</strong> 多一個字或少一個字都不行。<br>
+      例如「歸航！」可以，但「我們歸航了」就不行。標點符號（！。）不影響判定。
+    </div>
+
+    <div class="beach-step">
+      <div class="icon">🏄</div>
+      <div class="content">
+        <h4>SUP 划完後回岸邊</h4>
+        <p>SUP 立槳結束、安全回到岸上後，傳送這個密語：</p>
+        <div class="passphrase-box">
+          <div class="label">密語</div>
+          <div class="phrase">歸航</div>
+          <div class="note">「歸航！」也可以</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beach-step">
+      <div class="icon">🧭</div>
+      <div class="content">
+        <h4>找到沙灘嚮導</h4>
+        <p>找到帶你們活動的嚮導之後，傳送這個密語：</p>
+        <div class="passphrase-box">
+          <div class="label">密語</div>
+          <div class="phrase">我們找到了</div>
+          <div class="note">「我們找到了！」也可以</div>
+        </div>
+        <p style="margin-top:8px;">接著 Bot 會給你們三道 SDG 反思題，說任何話都算通過，逐一回答就好。</p>
+      </div>
+    </div>
+
+    <div class="beach-step">
+      <div class="icon">🌊</div>
+      <div class="content">
+        <h4>淨灘完成</h4>
+        <p>完成淨灘任務後，傳送這個密語：</p>
+        <div class="passphrase-box">
+          <div class="label">密語</div>
+          <div class="phrase">淨灘完成</div>
+          <div class="note">「淨灘完成！」也可以</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beach-step">
+      <div class="icon">📋</div>
+      <div class="content">
+        <h4>填完紀錄表格</h4>
+        <p>淨灘紀錄表格填完後，傳送這個密語：</p>
+        <div class="passphrase-box">
+          <div class="label">密語</div>
+          <div class="phrase">紀錄完成了</div>
+          <div class="note">「紀錄完成了！」也可以</div>
+        </div>
+        <p style="margin-top:8px;">傳完後，Bot 會引導你進入下一段（牛角組會進行第二次 SUP；海灘組則直接解鎖村落六關）。</p>
+      </div>
+    </div>
+
+    <div class="beach-step">
+      <div class="icon">🏆</div>
+      <div class="content">
+        <h4>最後 SUP 歸航，領取結業獎狀！</h4>
+        <p>（牛角組）所有任務完成後，最後一次 SUP 回到岸邊，再傳一次：</p>
+        <div class="passphrase-box">
+          <div class="label">密語</div>
+          <div class="phrase">歸航</div>
+        </div>
+        <p style="margin-top:8px;">Bot 會送上 <strong>結業獎狀</strong>，恭喜你們完成全部任務！🎉</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 6. 隨時可以用的指令 ===== -->
+  <section id="commands">
+    <h2 class="section-title"><span class="num">6</span>隨時可以用的指令</h2>
+    <p style="margin-bottom:16px; color:var(--gray-600); font-size:14px;">以下指令在活動的任何時間點都有效，可以隨時傳給 Bot。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>輸入</th>
+          <th>效果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="cmd-word">求助</span></td>
+          <td>進入求助模式。Bot 暫時不回應，讓輔導員可以幫你處理問題。</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-word">求助完成</span></td>
+          <td>離開求助模式，Bot 恢復回應並說「歡迎回來！」</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-word">進度</span></td>
+          <td>查看六道光完成了幾道，隨時確認進度。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert warn" style="margin-top:16px;">
+      ⚠️ <strong>不要隨便輸入「重置」！</strong><br>
+      輸入「重置」會清空所有進度和小隊資料，需要重新從頭設定。請只在真正需要時使用，並先詢問輔導員。
+    </div>
+  </section>
+
+  <!-- ===== 7. 常見問題 FAQ ===== -->
+  <section id="faq">
+    <h2 class="section-title"><span class="num">7</span>常見問題</h2>
+
+    <div class="faq-item">
+      <div class="q">
+        <span class="q-tag">Q</span>
+        Bot 完全沒有回應，傳什麼都沒反應？
+      </div>
+      <div class="a">
+        可能是進入了「求助模式」。試試傳送 <strong>求助完成</strong> 給 Bot，看看它有沒有恢復回應。如果還是沒有，請叫輔導員過來確認。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="q">
+        <span class="q-tag">Q</span>
+        答案感覺已經說對了，但 Bot 還是說沒過？
+      </div>
+      <div class="a">
+        Bot 的 AI 會判斷你有沒有答到「核心重點」。例如問「牆壁上的魚有什麼用途」，只說「好看」或「裝飾用」通常不夠，要答到「排水」或「讓雨水流走」才算。<br>
+        收到提示（💡）之後，試著往提示的方向再說一次，兩次沒答到的話 Bot 會直接告訴你答案並繼續，不用擔心。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="q">
+        <span class="q-tag">Q</span>
+        密語輸入了但 Bot 沒反應或說「再想想看？」？
+      </div>
+      <div class="a">
+        密語要和規定的字完全一樣，多一個字或少一個字就不會被認出。<br>
+        <strong>例如：</strong><br>
+        ✅ 可以：<strong>歸航</strong>、<strong>歸航！</strong><br>
+        ❌ 不行：<strong>我們歸航了</strong>（多了「我們」和「了」）<br>
+        ❌ 不行：<strong>已歸航</strong>（多了「已」）<br><br>
+        請複製或對照說明直接輸入，不要前後加其他字。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="q">
+        <span class="q-tag">Q</span>
+        手機沒電了，或是要換另一支手機繼續？
+      </div>
+      <div class="a">
+        請馬上告訴輔導員！因為小隊的進度是和手機的 LINE 帳號綁在一起的，換手機需要先處理帳號設定，才能繼續之前的進度。<strong>不要自己亂輸入「重置」</strong>，那樣會把進度清掉。
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- 頁尾 -->
+<footer>
+  <strong>牛角燈塔守護隊 · 音比沙 INBISA · 馬祖南竿牛角聚落</strong>
+  2026 年版 · 本說明適用所有參與者（學員、輔導員、家長、老師）
+</footer>
+
+</body>
+</html>
